@@ -1,3 +1,4 @@
+
 #define SERIALBUFFERSIZE 256
 static uint8_t serialBuffer[SERIALBUFFERSIZE]; // this hold the imcoming string from serial O string
 static uint8_t receiverIndex;
@@ -115,6 +116,7 @@ void serialMSPCheck()
   {
     for(uint8_t i=0;i<8;i++)
       MwRcData[i] = read16();
+      MwRcCommandTHROTTLE = read16();
     handleRawRC();
   }
 
@@ -210,9 +212,10 @@ void serialMSPCheck()
     mode_mag = 0;
     mode_gpshome = 0;
     mode_gpshold = 0;
-    mode_llights = 0;
-    mode_camstab = 0;
+//    mode_llights = 0;
+//    mode_camstab = 0;
     mode_osd_switch = 0;
+    mode_failsafe = 0;
 
     while(remaining > 0) {
       char c = read8();
@@ -233,10 +236,12 @@ void serialMSPCheck()
            mode_mag |= bit;
         if(firstc == 'B' && lastc == 'O') // "BARO;"
           mode_baro |= bit;
-        if(firstc == 'L' && lastc == 'S') // "LLIGHTS;"
-          mode_llights |= bit;
-        if(firstc == 'C' && lastc == 'B') // "CAMSTAB;"
-          mode_camstab |= bit;
+    //    if(firstc == 'L' && lastc == 'S') // "LLIGHTS;"
+    //      mode_llights |= bit;
+        if(firstc == 'F' && lastc == 'E') // "FAILSAFE;"
+          mode_failsafe |= bit;
+    //    if(firstc == 'C' && lastc == 'B') // "CAMSTAB;"
+    //      mode_camstab |= bit;
         if(firstc == 'G') {
           if(lastc == 'E') // "GPS HOME;"
             mode_gpshome |= bit;
@@ -268,7 +273,7 @@ void serialMSPCheck()
     mode_gpshold = 0;
 //    mode_llights = 0;
     mode_osd_switch = 0;
-    mode_camstab = 0;
+//    mode_camstab = 0;
 
     while(remaining > 0) {
       char c = read8();
@@ -288,9 +293,9 @@ void serialMSPCheck()
       case 5:
         mode_mag |= bit;
         break;
-      case 8:
-        mode_camstab |= bit;
-        break;
+//      case 8:
+//        mode_camstab |= bit;
+//        break;
       case 10:
         mode_gpshome |= bit;
         break;
