@@ -1,3 +1,4 @@
+
 char *ItoaPadded(int val, char *str, uint8_t bytes, uint8_t decimalpos)  {
   uint8_t neg = 0;
   if(val < 0) {
@@ -155,12 +156,12 @@ void displayMode(void)
       screenBuffer[1]=SYM_ACRO1;
     }
     MAX7456_WriteString(screenBuffer,getPosition(sensorPosition)+LINE);
-    if(MwSensorActive&mode_camstab&&Settings[S_GIMBAL]){
-      screenBuffer[2]=0;
-      screenBuffer[0]=SYM_GIMBAL;
-      screenBuffer[1]=SYM_GIMBAL1;  
-    MAX7456_WriteString(screenBuffer,getPosition(gimbalPosition));
-    }
+  //  if(MwSensorActive&mode_camstab&&Settings[S_GIMBAL]){
+  //    screenBuffer[2]=0;
+  //    screenBuffer[0]=SYM_GIMBAL;
+  //    screenBuffer[1]=SYM_GIMBAL1;  
+  //  MAX7456_WriteString(screenBuffer,getPosition(gimbalPosition));
+  // }
 
   if(Settings[S_MODESENSOR]){
     xx = 0;
@@ -183,18 +184,30 @@ void displayMode(void)
 
 void displayArmed(void)
 {
-  if(!armed){
-    MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
-    armedtimer=20;
-  }
-  else if(Blink10hz&&armedtimer){
-    armedtimer--;
-    MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
-  }
+  if(!(MwSensorActive & mode_failsafe))
+    {
+    if(voltage>Settings[S_VOLTAGEMIN])
+      {
+       if(!armed)
+          {
+           MAX7456_WriteString_P(disarmed_text, getPosition(motorArmedPosition));
+           armedtimer=20;
+          }
+         else if(Blink10hz&&armedtimer)
+          {
+           armedtimer--;
+           MAX7456_WriteString_P(armed_text, getPosition(motorArmedPosition));
+           }
+       }
+      else if(Blink2hz) MAX7456_WriteString_P(lipoalarm_text, getPosition(motorArmedPosition)); 
+    }
+   else MAX7456_WriteString_P(failsafe_text, getPosition(motorArmedPosition));
 }
 
 void displayCallsign(void)
 {
+  if(!fieldIsVisible(callSignPosition))
+    return;
   uint16_t position = getPosition(callSignPosition);
   if(Settings[S_DISPLAY_CS]){
       for(uint8_t X=0; X<10; X++) {
@@ -393,8 +406,8 @@ void displayCurrentThrottle(void)
   if(!fieldIsVisible(CurrentThrottlePosition))
     return;
   //
-  if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;
-  if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];      // Calibrate high and low throttle settings  --defaults set in GlobalVariables.h 1100-1900
+//  if (MwRcData[THROTTLESTICK] > HighT) HighT = MwRcData[THROTTLESTICK] -5;
+//  if (MwRcData[THROTTLESTICK] < LowT) LowT = MwRcData[THROTTLESTICK];      // Calibrate high and low throttle settings  --defaults set in GlobalVariables.h 1100-1900
   screenBuffer[0]=SYM_THR;
   screenBuffer[1]=0;
   MAX7456_WriteString(screenBuffer,getPosition(CurrentThrottlePosition));
@@ -409,7 +422,7 @@ void displayCurrentThrottle(void)
   else
   {
 
-    int CurThrottle = map(MwRcData[THROTTLESTICK],LowT,HighT,0,100);
+    int CurThrottle = map(MwRcCommandTHROTTLE,LowT,HighT,0,100);
     ItoaPadded(CurThrottle,screenBuffer,3,0);
     screenBuffer[3]='%';
     screenBuffer[4]=0;
@@ -579,12 +592,10 @@ void displayGPSPosition(void)
   // Shiki Mod
   if(!fieldIsVisible(MwGPSLatPosition))
     return;
-  if (!MwSensorActive&mode_gpshome)
-    return;
-
-  // Shiki Mod - display LAT/LON in  mode gpshome
-  if(Settings[S_COORDINATES]|MwSensorActive&mode_gpshome){
-    if(fieldIsVisible(MwGPSLatPosition)|MwSensorActive&mode_gpshome) {
+  
+  // Shiki Mod - display LAT/LON 
+  if((Settings[S_COORDINATES]) || (MwSensorActive & mode_failsafe)){
+    if(fieldIsVisible(MwGPSLatPosition)) {
       screenBuffer[0] = SYM_LAT;
       FormatGPSCoord(GPS_latitude,screenBuffer+1,4,'N','S');
       if(!Settings[S_GPSCOORDTOP])
@@ -593,7 +604,7 @@ void displayGPSPosition(void)
         MAX7456_WriteString(screenBuffer,getPosition(MwGPSLatPositionTop));  
     }
 
-    if(fieldIsVisible(MwGPSLatPosition)|!MwSensorActive&mode_gpshome) {
+    if(fieldIsVisible(MwGPSLonPosition)) {
       screenBuffer[0] = SYM_LON;
       FormatGPSCoord(GPS_longitude,screenBuffer+1,4,'E','W');
       if(!Settings[S_GPSCOORDTOP])
@@ -604,8 +615,6 @@ void displayGPSPosition(void)
   }
   
   if(Settings[S_GPSALTITUDE]){
-    if(!fieldIsVisible(MwGPSAltPosition))
-    return;
    //
       screenBuffer[0] = MwGPSAltPositionAdd[Settings[S_UNITSYSTEM]];
       uint16_t xx;
@@ -614,6 +623,8 @@ void displayGPSPosition(void)
       else
         xx = GPS_altitude;          // Mt
       itoa(xx,screenBuffer+1,10);
+      if(!fieldIsVisible(MwGPSAltPosition))
+      return;
       MAX7456_WriteString(screenBuffer,getPosition(MwGPSAltPosition));
       }
 }
