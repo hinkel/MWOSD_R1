@@ -1,3 +1,4 @@
+
 /*--------------------------------------------------       configurable parameters      ----------------------------------------------------*/
 
 /********************       HARDWARE settings      *********************/
@@ -31,11 +32,12 @@
 //#define ALT_CENTER         // Enbale alternative center crosshair
 
 /**********************       Serial speed      ************************/
-//#define SERIAL_SPEED 115200
+#define SERIAL_SPEED 115200
 
 
 /**********************************   MSP Options and compatibility **********************/
-//#define BOXNAMES           // required to support multiwii 2.1 / 2.0 
+#define USE_BOXNAMES           // required to support multiwii 2.1 / 2.0 
+#define BOXNAMES           // required to support multiwii 2.1 / 2.0 
 
 
 /********************       For OSD SWITCH      *********************/
