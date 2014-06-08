@@ -632,8 +632,8 @@ void displayGPSPosition(void)
 void displayNumberOfSat(void)
 {
   // Shiki mod
-  if(!GPS_fix)
-    return;
+  //if(!GPS_fix)
+  //  return;
   if(!fieldIsVisible(GPS_numSatPosition))
     return;
   //
