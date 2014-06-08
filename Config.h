@@ -39,7 +39,6 @@
 #define USE_BOXNAMES           // required to support multiwii 2.1 / 2.0 
 #define BOXNAMES           // required to support multiwii 2.1 / 2.0 
 
-
 /********************       For OSD SWITCH      *********************/
 // In following defines, use DISPLAY_MIN_OFF to hide when using OSD_SWITCH
 // Otherwise select DISPLAY_ALWAYS (it can be enabled / disbled by GUI
