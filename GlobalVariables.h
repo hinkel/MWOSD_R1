@@ -246,7 +246,7 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_DISPLAY_CS,               37
 1,   // GPStime                     37a
 1,   // GPSTZ +/-                   37b
-1,   // GPSTZ                       37c
+2,   // GPSTZ                       37c
 0,   // GPSDS                       37d
 0,   // DEBUG                       37e
 1,   // SCROLOLING LADDERS          37f
