@@ -1,4 +1,3 @@
-
 #define POS_MASK        0x01FF
 #define PAL_MASK        0x0003
 #define PAL_SHFT             9
