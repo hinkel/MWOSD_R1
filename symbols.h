@@ -70,7 +70,7 @@
 #define SYM_GIMBAL1 0X17
 
 
-// SensorÂ´s Presence
+// Sensor´s Presence
 #define SYM_ACC 0XA0
 #define SYM_MAG 0XA1
 #define SYM_BAR 0XA2
@@ -115,18 +115,18 @@
 #define SYM_BATT_1 0X95
 #define SYM_BATT_EMPTY 0X96
 
-// Batt IconÂ´s
+// Batt Icon´s
 #define SYM_MAIN_BATT 0X97
 #define SYM_VID_BAT 0XBF
 
-// Unit IconÂ´s (Metric)
+// Unit Icon´s (Metric)
 #define SYM_MS 0X9F
 #define SYM_KMH 0XA5
 #define SYM_ALTM 0XA7
 #define SYM_DISTHOME_M 0XBB
 #define SYM_M 0X0C
 
-// Unit IconÂ´s (Imperial)
+// Unit Icon´s (Imperial)
 #define SYM_FTS 0X99
 #define SYM_MPH 0XA6
 #define SYM_ALTFT 0XA8
