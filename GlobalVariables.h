@@ -119,7 +119,8 @@ uint32_t mode_gpshome;
 uint32_t mode_gpshold;
 //uint32_t mode_llights;
 uint32_t mode_osd_switch;
-uint32_t mode_camstab;
+uint32_t mode_failsafe;
+//uint32_t mode_camstab;
 
 // Settings Locations
 enum Setting_ {
@@ -210,12 +211,12 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 0,   // S_MWRSSI                    5
 0,   // S_PWMRSSI                   6
 1,   // S_DISPLAYVOLTAGE            7
-138, // S_VOLTAGEMIN                8
-4,   // S_BATCELLS                  9
-200, // S_DIVIDERRATIO              10
-0,   // S_MAINVOLTAGE_VBAT          11
-0,   // S_AMPERAGE                  12
-0,   // S_AMPER_HOUR                13
+104, // S_VOLTAGEMIN                8
+3,   // S_BATCELLS                  9
+122, // S_DIVIDERRATIO              10
+1,   // S_MAINVOLTAGE_VBAT          11
+1,   // S_AMPERAGE                  12
+1,   // S_AMPER_HOUR                13
 1,   // S_AMPERAGE_VIRTUAL,
 150, // S_AMPDIVIDERRATIO,
 0,   // S_VIDVOLTAGE                14
@@ -226,38 +227,38 @@ uint8_t EEPROM_DEFAULT[EEPROM_SETTINGS] = {
 1,   // S_BOARDTYPE                 19
 1,   // S_DISPLAYGPS                20
 0,   // S_COORDINATES               21
-1,   // S_GPSCOORDTOP               22
-0,   // S_GPSALTITUDE               23
-0,   // S_ANGLETOHOME               24 
-0,   // S_SHOWHEADING               25
+0,   // S_GPSCOORDTOP               22
+1,   // S_GPSALTITUDE               23
+1,   // S_ANGLETOHOME               24 
+1,   // S_SHOWHEADING               25
 1,   // S_HEADING360                26
 0,   // S_UNITSYSTEM                27
-0,   // S_VIDEOSIGNALTYPE           28
-0,   // S_THROTTLEPOSITION          29
+1,   // S_VIDEOSIGNALTYPE           28
+1,   // S_THROTTLEPOSITION          29
 1,   // S_DISPLAY_HORIZON_BR        30
 1,   // S_WITHDECORATION            31
-0,   // S_SHOWBATLEVELEVOLUTION     32
-0,   // S_RESETSTATISTICS           33
+1,   // S_SHOWBATLEVELEVOLUTION     32
+1,   // S_RESETSTATISTICS           33
 0,   // S_ENABLEADC                 34
 0,   // S_VREFERENCE,
-0,   // S_USE_BOXNAMES              35
+1,   // S_USE_BOXNAMES              35
 1,   // S_MODEICON                  36
-0,   // S_DISPLAY_CS,               37
-0,   // GPStime                     37a
-0,   // GPSTZ +/-                   37b
-0,   // GPSTZ                       37c
+1,   // S_DISPLAY_CS,               37
+1,   // GPStime                     37a
+1,   // GPSTZ +/-                   37b
+1,   // GPSTZ                       37c
 0,   // GPSDS                       37d
 0,   // DEBUG                       37e
 1,   // SCROLOLING LADDERS          37f
-1,   // SHOW GIMBAL ICON            37g
+0,   // SHOW GIMBAL ICON            37g
 1,   // SHOW VARIO                  37h
 1,   // SHOW BAROALT                38h 50
 1,   // SHOW COMPASS                39h
-0,   // S_HORIZON_ELEVATION         40h
+1,   // S_HORIZON_ELEVATION         40h
 1,   // S_TIMER                     41h
 1,   // S_MODESENSOR                42h
 1,   // S_SIDEBARTOPS               43h
-4,   // S_AMPMIN,
+2,   // S_AMPMIN,
 150,  // S_AMPMAXL,
 0,   // S_AMPMAXH,
 0,   // S_CS0,
@@ -290,6 +291,7 @@ int32_t  old_MwAltitude=0;                         // This hold barometric value
 int MwAngle[2]={0,0};           // Those will hold Accelerator Angle
 static uint16_t MwRcData[8]={   // This hold receiver pulse signal
   1500,1500,1500,1500,1500,1500,1500,1500} ;
+static uint16_t MwRcCommandTHROTTLE;
 
 uint16_t  MwSensorPresent=0;
 uint32_t  MwSensorActive=0;
@@ -327,8 +329,8 @@ unsigned long sidebarsMillis = 0;
 unsigned long sidebaraMillis = 0;
 
 //For Current Throttle
-int LowT = 1100;
-int HighT = 1900;
+int LowT = 1100;        //  Take value from FC in this case   cfg.minthrottle   = 1150 -50;       
+int HighT = 1900;       //  Take value from FC in this case   cfg.maxthrottle   = 1950 -50;
 
 // For Time
 uint16_t onTime=0;
@@ -428,7 +430,8 @@ uint16_t flyingTime=0;
 
 const char disarmed_text[] PROGMEM = "DISARMED";
 const char armed_text[] PROGMEM = " ARMED";
-
+const char failsafe_text[] PROGMEM = "FAILSAFE"; 
+const char lipoalarm_text[] PROGMEM = "LIPO ALARM"; 
 
 // For Intro
 const char message0[] PROGMEM = "MULTIWII NG OSD - R1";
