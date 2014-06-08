@@ -1,3 +1,4 @@
+
 #define POS_MASK        0x01FF
 #define PAL_MASK        0x0003
 #define PAL_SHFT             9
@@ -73,8 +74,8 @@ uint8_t fieldIsVisible(uint8_t pos) {
   case DISPLAY_NEVER:
     return 0;
   case DISPLAY_COND:
-    return !!(MwSensorActive&mode_osd_switch);
+    return !!(MwSensorActive & mode_osd_switch);
   case DISPLAY_MIN_OFF:
-    return !(MwSensorActive&mode_osd_switch);
+    return (!(MwSensorActive & mode_osd_switch) || (MwSensorActive & mode_failsafe));
   }
 }
