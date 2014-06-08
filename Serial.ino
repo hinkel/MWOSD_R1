@@ -116,7 +116,7 @@ void serialMSPCheck()
   {
     for(uint8_t i=0;i<8;i++)
       MwRcData[i] = read16();
-      MwRcCommandTHROTTLE = read16();
+    MwRcCommandTHROTTLE = read16();
     handleRawRC();
   }
 
