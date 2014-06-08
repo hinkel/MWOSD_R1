@@ -45,6 +45,7 @@ unsigned long previous_millis_high =0;
 
 void setup()
 {
+  delay (8000); // Waiting for FC Naze32
   Serial.begin(115200);
 //---- override UBRR with MWC settings
   uint8_t h = ((F_CPU  / 4 / (115200) -1) / 2) >> 8;
@@ -488,7 +489,7 @@ void ProcessAnalogue(void) {
 }
 
 void ProcessVirtualSensors(void){
-  uint32_t Vthrottle = constrain(MwRcData[THROTTLESTICK],1000,2000);
+  uint32_t Vthrottle = constrain(MwRcCommandTHROTTLE,1000,2000);
   Vthrottle = constrain((Vthrottle-1000)/10,10,100);
 //    amperage = (Vthrottle+(Vthrottle*Vthrottle*0.02))*Settings[S_AMPDIVIDERRATIO]*0.01;
     amperage = (Vthrottle+(Vthrottle*Vthrottle*0.02))*S16_AMPMAX*0.01;
